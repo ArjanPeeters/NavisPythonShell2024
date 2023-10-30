@@ -1,0 +1,54 @@
+import csv, os
+import pprint as pp
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+# fill in the 3 variables below
+pset_names = ['Waternet generiek', 'Item', 'Element', 'BaseQuantities']
+file_location = r"C:\Users\ArjanPeeters\OneDrive - BIMnerd\Waternet\Huidige Modellen\LeiduinII-5G"
+file_name = 'data_check_kozijnen.csv'
+
+
+selection = doc.CurrentSelection.SelectedItems
+file = os.path.join(file_location, file_name)
+
+list_of_headers = []
+export_data = []
+
+if any(selection):
+	for sel in selection:
+		temp_dict = {}
+		for i in sel.PropertyCategories:
+			
+			if i.DisplayName in pset_names:
+				print('\n')
+				print(i.DisplayName)
+				
+				for prop in i.Properties:
+					pset_name = i.DisplayName.title().replace(" ", "")
+					prop_name = prop.DisplayName.title().replace(" ", "")
+					header_name = "{0}_{1}".format(pset_name, prop_name)
+					print('\t' + prop.DisplayName + ":\t" + prop.Value.ToString()[14:])
+					if header_name not in list_of_headers:
+						list_of_headers.append(header_name)
+					temp_dict[header_name] = prop.Value.ToString()[14:]
+					
+
+			else:
+				print(i.DisplayName)
+				
+		if any(temp_dict):
+			export_data.append(temp_dict)
+	
+		print('\n')
+			
+pp.pprint(export_data)
+print('Total Elements: ',len(export_data))
+
+with open(file, 'w') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=list_of_headers, delimiter=";", lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(export_data)
+    
+print('Saved: ', os.path.abspath(file))
