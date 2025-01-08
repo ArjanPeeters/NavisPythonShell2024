@@ -1,4 +1,4 @@
-# NavisPythonShell 2024
+# NavisPythonShell 2024 & 2025
 
 ## Credits
 This is a plugin specifically for Navisworks 2024
