@@ -5,9 +5,11 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 # fill in the 3 variables below
-pset_names = ['Waternet generiek', 'Item', 'Element', 'BaseQuantities']
-file_location = r"C:\Users\ArjanPeeters\OneDrive - BIMnerd\Waternet\Huidige Modellen\LeiduinII-5G"
-file_name = 'data_check_kozijnen.csv'
+pset_names = ['Item', 'BaseQuantities']
+pset_starts_with = []
+pset_ends_with = []
+file_location = r"C:\Users\ArjanPeeters\OneDrive - BIMnerd\BIM repo\NavisPythonScripts"
+file_name = 'test.csv'
 
 
 selection = doc.CurrentSelection.SelectedItems
@@ -21,12 +23,21 @@ if any(selection):
 		temp_dict = {}
 		for i in sel.PropertyCategories:
 			
-			if i.DisplayName in pset_names:
+			check = False
+			for item in pset_starts_with:
+				if i.DisplayName.startswith(item):
+					check = item
+			
+			for item in pset_ends_with:
+				if i.DisplayNam.endswith(item):
+					check = item
+			
+			if i.DisplayName in pset_names or check != False:
 				print('\n')
 				print(i.DisplayName)
 				
 				for prop in i.Properties:
-					pset_name = i.DisplayName.title().replace(" ", "")
+					pset_name = check if check != False else i.DisplayName.title().replace(" ", "")
 					prop_name = prop.DisplayName.title().replace(" ", "")
 					header_name = "{0}_{1}".format(pset_name, prop_name)
 					print('\t' + prop.DisplayName + ":\t" + prop.Value.ToString()[14:])
@@ -52,3 +63,4 @@ with open(file, 'w') as csvfile:
     writer.writerows(export_data)
     
 print('Saved: ', os.path.abspath(file))
+print('This CSV file script is courtsey of BIMnerd')
